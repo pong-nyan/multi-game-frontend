@@ -6,9 +6,7 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:react/recommended",
-    "airbnb",
-    "airbnb-typescript"
+    "plugin:react/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -23,10 +21,6 @@
     "indent": [
       "warn",
       2
-    ],
-    "linebreak-style": [
-      "warn",
-      "unix"
     ],
     "quotes": [
       "warn",

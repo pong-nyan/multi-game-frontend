@@ -1,60 +1,60 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import DrawableBall from "../../../objects/DrawableBall";
-import { Ball } from "../../../interfaces/Ball";
-import { io as socketIOClient, Socket } from "socket.io-client";
-import { DefaultEventsMap } from "@socket.io/component-emitter";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import DrawableBall from '../../../objects/DrawableBall';
+import { Ball } from '../../../interfaces/Ball';
+import { io as socketIOClient, Socket } from 'socket.io-client';
+import { DefaultEventsMap } from '@socket.io/component-emitter';
 
 export default function Run({ setGameStatus }: { setGameStatus: Dispatch<SetStateAction<number>> }) {
-	const canvasRef = useRef<HTMLCanvasElement>(null)
-	const ctxRef = useRef<CanvasRenderingContext2D | null>()
-	const ballRef = useRef<DrawableBall>()
-	const requestRef = useRef<number>()
-	const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>()
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ctxRef = useRef<CanvasRenderingContext2D | null>();
+  const ballRef = useRef<DrawableBall>();
+  const requestRef = useRef<number>();
+  const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>();
 
-	const sendGameEvent = (e: KeyboardEvent) => {
-		if (!socketRef.current) return
-		socketRef.current.emit('game', { keyCode: e.key })
-	}
+  const sendGameEvent = (e: KeyboardEvent) => {
+    if (!socketRef.current) return;
+    socketRef.current.emit('game', { keyCode: e.key });
+  };
 
-	const initGame = () => {
-		console.log('init game all');
-		if (!canvasRef.current) return
-		const ctx = canvasRef.current.getContext('2d')
-		ctxRef.current = ctx
-		socketRef.current = socketIOClient('http://localhost:4242')
-		socketRef.current.on('game', (balls: Ball[]) => {
-			ballRef.current = new DrawableBall(balls[0].id, balls[0].x, balls[0].y, balls[0].radius, balls[0].color)
-		})
+  const initGame = () => {
+    console.log('init game all');
+    if (!canvasRef.current) return;
+    const ctx = canvasRef.current.getContext('2d');
+    ctxRef.current = ctx;
+    socketRef.current = socketIOClient('http://localhost:4242');
+    socketRef.current.on('game', (balls: Ball[]) => {
+      ballRef.current = new DrawableBall(balls[0].id, balls[0].x, balls[0].y, balls[0].radius, balls[0].color);
+    });
 
-		window.addEventListener('keydown', sendGameEvent)
-	}
+    window.addEventListener('keydown', sendGameEvent);
+  };
 
-	const renderCanvas = () => {
-		if (!canvasRef.current || !ctxRef.current) return
-		const ctx = ctxRef.current
-		ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
-		console.log(ballRef.current);
-		if (ballRef.current) {
-			ballRef.current.draw(ctx);
-		}
-		requestRef.current = requestAnimationFrame(renderCanvas)
-	}
+  const renderCanvas = () => {
+    if (!canvasRef.current || !ctxRef.current) return;
+    const ctx = ctxRef.current;
+    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    console.log(ballRef.current);
+    if (ballRef.current) {
+      ballRef.current.draw(ctx);
+    }
+    requestRef.current = requestAnimationFrame(renderCanvas);
+  };
 
-	useEffect(() => {
-		initGame()
-		requestRef.current = requestAnimationFrame(renderCanvas)
+  useEffect(() => {
+    initGame();
+    requestRef.current = requestAnimationFrame(renderCanvas);
 
-		return () => {
-			if (!requestRef.current) return
-			cancelAnimationFrame(requestRef.current)
-			window.removeEventListener('keydown', sendGameEvent)
-		}
-	})
+    return () => {
+      if (!requestRef.current) return;
+      cancelAnimationFrame(requestRef.current);
+      window.removeEventListener('keydown', sendGameEvent);
+    };
+  });
 
-	return (
-		// TODO: width and height should be defined in a config file
-		<canvas width={1280} height={720} ref={canvasRef}>
+  return (
+  // TODO: width and height should be defined in a config file
+    <canvas width={1280} height={720} ref={canvasRef}>
 			Canvas
-		</canvas>
-	)
+    </canvas>
+  );
 }
