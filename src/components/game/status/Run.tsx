@@ -7,7 +7,7 @@ import { DefaultEventsMap } from '@socket.io/component-emitter';
 export default function Run({ setGameStatus }: { setGameStatus: Dispatch<SetStateAction<number>> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>();
-  const ballRef = useRef<DrawableBall>();
+  const ballsRef = useRef<DrawableBall[]>();
   const requestRef = useRef<number>();
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>();
 
@@ -23,7 +23,7 @@ export default function Run({ setGameStatus }: { setGameStatus: Dispatch<SetStat
     ctxRef.current = ctx;
     socketRef.current = socketIOClient('http://localhost:4242');
     socketRef.current.on('game', (balls: Ball[]) => {
-      ballRef.current = new DrawableBall(balls[0].id, balls[0].x, balls[0].y, balls[0].radius, balls[0].color);
+      ballsRef.current = new DrawableBall(balls[0].id, balls[0].x, balls[0].y, balls[0].radius, balls[0].color);
     });
 
     window.addEventListener('keydown', sendGameEvent);
@@ -33,9 +33,9 @@ export default function Run({ setGameStatus }: { setGameStatus: Dispatch<SetStat
     if (!canvasRef.current || !ctxRef.current) return;
     const ctx = ctxRef.current;
     ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-    console.log(ballRef.current);
-    if (ballRef.current) {
-      ballRef.current.draw(ctx);
+    console.log(ballsRef.current);
+    if (ballsRef.current) {
+      ballsRef.current.draw(ctx);
     }
     requestRef.current = requestAnimationFrame(renderCanvas);
   };
