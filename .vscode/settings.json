@@ -1,3 +1,15 @@
 {
-    "workbench.colorTheme": "Visual Studio Light - C++"
+    "workbench.colorTheme": "Visual Studio Light - C++",
+    "eslint.format.enable": true,
+    "eslint.workingDirectories": [],
+    "eslint.codeActionsOnSave.rules": {
+        "source.fixall": true
+    },
+    "editor.formatOnSave": true,
+    "[typescript]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    }
 }
