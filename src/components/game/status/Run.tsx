@@ -22,8 +22,8 @@ export default function Run({ setGameStatus }: { setGameStatus: Dispatch<SetStat
     const ctx = canvasRef.current.getContext('2d');
     ctxRef.current = ctx;
     socketRef.current = socketIOClient('http://localhost:4242');
-    socketRef.current.on('game', (balls: Ball[]) => {
-      ballsRef.current = new DrawableBall(balls[0].id, balls[0].x, balls[0].y, balls[0].radius, balls[0].color);
+    socketRef.current.on('balls', (balls: Ball[]) => {
+      ballsRef.current = balls.map((ball) => new DrawableBall(ball.id, ball.x, ball.y, ball.radius, ball.color));
     });
 
     window.addEventListener('keydown', sendGameEvent);
@@ -33,9 +33,10 @@ export default function Run({ setGameStatus }: { setGameStatus: Dispatch<SetStat
     if (!canvasRef.current || !ctxRef.current) return;
     const ctx = ctxRef.current;
     ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-    console.log(ballsRef.current);
     if (ballsRef.current) {
-      ballsRef.current.draw(ctx);
+      ballsRef.current.forEach((ball) => {
+        ball.draw(ctx);
+      });
     }
     requestRef.current = requestAnimationFrame(renderCanvas);
   };
