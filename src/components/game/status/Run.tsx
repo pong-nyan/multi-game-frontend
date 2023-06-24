@@ -24,7 +24,6 @@ export default function Run({ setGameStatus }: { setGameStatus: Dispatch<SetStat
     socketRef.current = socketIOClient('http://localhost:4242');
     socketRef.current.on('balls', (balls: Ball[]) => {
       ballsRef.current = balls.map((ball) => new DrawableBall(ball.id, ball.x, ball.y, ball.radius, ball.color));
-      console.log(ballsRef.current[0].color);  
     });
 
     window.addEventListener('keydown', sendGameEvent);
